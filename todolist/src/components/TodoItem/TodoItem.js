@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './TodoItem.css';
 import styled from 'styled-components';
 
 const RemoveButton = styled.div`
