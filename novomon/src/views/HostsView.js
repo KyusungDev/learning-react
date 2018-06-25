@@ -35,6 +35,12 @@ const styles = theme => ({
 });
 
 class HostsView extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { inProgress: true };
+  }
+
   componentDidMount() {
     const { HostsActions } = this.props;
     let intervalTimer = setInterval(() => HostsActions.getHostsAsync(), 3000);
@@ -55,7 +61,9 @@ class HostsView extends Component {
       return l > r ? 1 : l < r ? -1 : 0;
     });
 
-    return (
+    return this.state.inProgress ? (
+      <div>progress</div>
+    ) : (
       <Paper className={classes.root}>
         <Table className={classes.table}>
           <TableHead>

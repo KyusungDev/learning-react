@@ -3,11 +3,9 @@ import produce from 'immer';
 
 // 타입's
 const GET_HOSTS = 'hosts/GET_HOSTS';
-const GET_HOSTS_RESOURCE = 'hosts/GET_HOSTS_RESOURCE';
 
 // 액션's
 export const getHosts = createAction(GET_HOSTS);
-export const getHostsResource = createAction(GET_HOSTS_RESOURCE);
 
 // Promise.all([
 //   fetch('https://fcctop100.herokuapp.com/api/fccusers/top/recent'),
@@ -19,7 +17,7 @@ export const getHostsResource = createAction(GET_HOSTS_RESOURCE);
 //   alltimeInfo: data2
 // }));
 
-export const getHostsAsync = () => dispatch => {
+export const getHostsAsync = callback => dispatch => {
   // v1/hosts
   // v1/host-status/resource
   Promise.all([
@@ -40,6 +38,8 @@ export const getHostsAsync = () => dispatch => {
         resources
       })
     );
+
+    callback ? callback() : '';
   });
 };
 

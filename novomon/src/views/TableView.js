@@ -4,15 +4,28 @@ import { bindActionCreators } from 'redux';
 import * as hostsActions from '../store/modules/Hosts';
 import styled from 'styled-components';
 import oc from 'open-color';
-
-// Import React Table
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+const Wrapper = styled.form`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+`;
 
 class TableView extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { inProgress: true, intervalTimer: null };
+  }
+
   componentDidMount() {
     const { HostsActions } = this.props;
-    HostsActions.getHostsAsync();
+    HostsActions.getHostsAsync(() => {
+      this.setState({ inProgress: false });
+    });
+
     let intervalTimer = setInterval(() => HostsActions.getHostsAsync(), 3000);
     this.setState({ intervalTimer: intervalTimer });
   }
@@ -21,7 +34,7 @@ class TableView extends Component {
     clearInterval(this.state.intervalTimer);
   }
 
-  render() {
+  makeData() {
     const { hosts, resources } = this.props;
     let hostList = hosts.slice();
 
@@ -31,7 +44,7 @@ class TableView extends Component {
       return l > r ? 1 : l < r ? -1 : 0;
     });
 
-    const data = hostList.map(host => {
+    return hostList.map(host => {
       let resource = resources.find(e => e.ip === host.ip);
       let disk = '';
       let memory = '';
@@ -55,7 +68,9 @@ class TableView extends Component {
         memory: memory
       };
     });
+  }
 
+  makeColumns() {
     const columns = [
       {
         Header: 'IP',
@@ -177,10 +192,18 @@ class TableView extends Component {
       }
     ];
 
-    return (
+    return columns;
+  }
+
+  render() {
+    return this.state.inProgress ? (
+      <Wrapper>
+        <CircularProgress size={70} />
+      </Wrapper>
+    ) : (
       <ReactTable
-        data={data}
-        columns={columns}
+        data={this.makeData()}
+        columns={this.makeColumns()}
         showPagination={false}
         sortable={false}
         className="-striped -highlight"
