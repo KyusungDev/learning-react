@@ -9,11 +9,17 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
-import SwitchLabels from './../components/SwitchLables';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@material-ui/core/Button';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import oc from 'open-color';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as authActions from '../store/modules/Auth';
 
 const Wrapper = styled.form`
   position: absolute;
@@ -35,6 +41,12 @@ const styles = theme => ({
     flexWrap: 'wrap'
   },
   formControl: {
+    margin: theme.spacing.unit
+  },
+  button: {
+    display: 'flex',
+    flexDirection: 'row-reverse',
+    justifyContent: 'flex-end',
     margin: theme.spacing.unit
   }
 });
@@ -68,14 +80,19 @@ class MailReportView extends Component {
         senderSmtpPort: json.sender.smtpPort,
         receivers: json.receivers
       });
-
-      console.log(json);
-      console.log(json.receivers);
     });
   }
 
-  handleChange = event => {
-    this.setState({ name: event.target.value });
+  handleAutoReportClick = event => {
+    let check = !this.state.checkedAutoReport;
+    // /v1/mail-report/config/onOff
+    fetch(`https://jsonplaceholder.typicode.com/posts/1`).then(res => {
+      this.setState({ checkedAutoReport: check });
+    });
+  };
+
+  handleChange = name => event => {
+    this.setState({ [name]: event.target.value });
   };
 
   makeData() {
@@ -110,8 +127,7 @@ class MailReportView extends Component {
   }
 
   render() {
-    const { classes } = this.props;
-
+    const { classes, isLoginSuccess } = this.props;
     return this.state.inProgress ? (
       <Wrapper>
         <CircularProgress size={70} />
@@ -119,15 +135,27 @@ class MailReportView extends Component {
     ) : (
       <div className={classes.root}>
         <Paper className={classes.paper}>
-          <Typography variant="subheading" align="left">
+          <Typography variant="title" align="left">
             메일 자동 보고 설정
-            <SwitchLabels checked={this.state.checkedAutoReport} />
+            <FormGroup row>
+              <FormControlLabel
+                control={
+                  <Switch
+                    disabled={!isLoginSuccess}
+                    checked={this.state.checkedAutoReport}
+                    onChange={this.handleAutoReportClick}
+                    value="checkedAutoReport"
+                    color="primary"
+                  />
+                }
+              />
+            </FormGroup>
           </Typography>
           <Divider />
           <br />
           <br />
-          <Typography variant="subheading" align="left">
-            Sender
+          <Typography variant="title" align="left">
+            발신자 정보
             <div className={classes.container}>
               <FormControl className={classes.formControl} disabled>
                 <InputLabel htmlFor="senderEmail">메일</InputLabel>
@@ -173,9 +201,12 @@ class MailReportView extends Component {
         </Paper>
         <br />
         <Paper className={classes.paper}>
-          <Typography variant="subheading" align="left">
-            Receivers
+          <Typography variant="title" align="left">
+            수신자 목록
           </Typography>
+          <Button variant="outlined" className={classes.button} color="primary">
+            수신자 추가
+          </Button>
         </Paper>
         <Paper>
           <ReactTable
@@ -196,4 +227,18 @@ MailReportView.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(MailReportView);
+// store의 state를 props로 가져오기
+const mapStateToProps = state => {
+  return { isLoginSuccess: state.Auth.isLoginSuccess };
+};
+
+// action을 props로 가져오기
+const mapDispatchToProps = dispatch => ({
+  AuthActions: bindActionCreators(authActions, dispatch)
+});
+
+// connect HOC을 이용하여 적용
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(MailReportView));

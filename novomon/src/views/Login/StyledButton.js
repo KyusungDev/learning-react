@@ -7,10 +7,10 @@ const Wrapper = styled.div`
   height: 3rem;
   background: ${oc.teal[6]};
   color: white;
-  padding-top: 0.6rem;
+  padding-top: 0.75rem;
 
   text-align: center;
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: bold;
 
   cursor: pointer;

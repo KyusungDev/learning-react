@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Route, Link, Switch } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as hostsActions from '../store/modules/Hosts';
+import { Route, Link, Switch, Redirect } from 'react-router-dom';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -23,11 +20,14 @@ import ComputerIcon from '@material-ui/icons/Computer';
 import SendIcon from '@material-ui/icons/Send';
 import MailIcon from '@material-ui/icons/Mail';
 import HomeView from './../views/HomeView';
-import HostsView from './../views/HostsView';
 import TableView from './../views/TableView';
 import MailReportView from './../views/MailReportView';
 import PingView from './../views/PingView';
 import LoginView from './../views/Login/LoginView';
+import LoginView2 from './../views/Login/LoginView2';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as authActions from '../store/modules/Auth';
 
 const drawerWidth = 240;
 
@@ -100,6 +100,23 @@ const styles = theme => ({
   }
 });
 
+const PrivateRoute = ({ component: Component, ...params }) => {
+  return (
+    <Route
+      {...params}
+      render={props => {
+        return params.isLoginSuccess ? (
+          <Redirect
+            to={{ pathname: '/home', state: { from: props.location } }}
+          />
+        ) : (
+          <Component {...props} />
+        );
+      }}
+    />
+  );
+};
+
 class App extends Component {
   state = {
     open: false
@@ -113,13 +130,14 @@ class App extends Component {
     this.setState({ open: false });
   };
 
-  handleLogin = () => {
-    console.log('clic');
+  handleLogout = () => {
+    const { AuthActions, history } = this.props;
+    AuthActions.setLoginStateAsync(false);
+    history.push('/');
   };
 
   render() {
-    const { classes, theme } = this.props;
-
+    const { classes, theme, isLoginSuccess } = this.props;
     return (
       <div className={classes.root}>
         <AppBar
@@ -128,6 +146,7 @@ class App extends Component {
             classes.appBar,
             this.state.open && classes.appBarShift
           )}
+          color="primary"
         >
           <Toolbar disableGutters={!this.state.open}>
             <IconButton
@@ -150,18 +169,26 @@ class App extends Component {
             >
               SERMON
             </Typography>
-            <IconButton
-              color="inherit"
-              aria-label="login"
-              component={Link}
-              to="/login"
-              className={classNames(
-                classes.loginButton,
-                this.state.open && classes.hide
-              )}
-            >
-              Login
-            </IconButton>
+            {isLoginSuccess ? (
+              <IconButton
+                color="inherit"
+                aria-label="login"
+                className={classNames(classes.loginButton)}
+                onClick={this.handleLogout}
+              >
+                Logout
+              </IconButton>
+            ) : (
+              <IconButton
+                color="inherit"
+                aria-label="login"
+                component={Link}
+                to="/login"
+                className={classNames(classes.loginButton)}
+              >
+                Login
+              </IconButton>
+            )}
           </Toolbar>
         </AppBar>
         <Drawer
@@ -211,7 +238,11 @@ class App extends Component {
             <Route path="/hosts" component={TableView} />
             <Route path="/mail-report" component={MailReportView} />
             <Route path="/ping" component={PingView} />
-            <Route path="/login" component={LoginView} />
+            <PrivateRoute
+              path="/login"
+              component={LoginView}
+              isLoginSuccess={isLoginSuccess}
+            />
             <Route path="/" component={HomeView} />
           </Switch>
         </main>
@@ -227,12 +258,12 @@ App.propTypes = {
 
 // store의 state를 props로 가져오기
 const mapStateToProps = state => {
-  return { hosts: state.Hosts.hosts };
+  return { isLoginSuccess: state.Auth.isLoginSuccess };
 };
 
 // action을 props로 가져오기
 const mapDispatchToProps = dispatch => ({
-  HostsActions: bindActionCreators(hostsActions, dispatch)
+  AuthActions: bindActionCreators(authActions, dispatch)
 });
 
 // connect HOC을 이용하여 적용

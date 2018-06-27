@@ -9,17 +9,19 @@ class SwitchLabels extends Component {
   };
 
   handleChange = name => event => {
+    console.log(name, event, this.state);
     this.setState({ [name]: event.target.checked });
   };
 
   render() {
-    const { checked } = this.props;
+    const { checked, disabled } = this.props;
     return (
       <FormGroup row>
         <FormControlLabel
           control={
             <Switch
-              checked={checked}
+              disabled={disabled}
+              checked={this.state.checked}
               onChange={this.handleChange('checked')}
               value="checked"
               color="primary"
