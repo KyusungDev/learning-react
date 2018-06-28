@@ -18,10 +18,11 @@ const Input = styled.input`
   border: 1px solid ${oc.gray[2]};
   outline: none;
   border-radius: 0px;
-  line-height: 2.5rem;
-  font-size: 1.2rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  line-height: 2.5em;
+  font-size: 1.2em;
+  margin-top: 0.5em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
   ::placeholder {
     color: ${oc.gray[3]};
     opacity: 1; /* Firefox */

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import oc from 'open-color';
 import InputWidthLabel from './InputWithLabel';
@@ -6,6 +6,7 @@ import StyledButton from './StyledButton';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as authActions from '../../store/modules/Auth';
+import Fade from '@material-ui/core/Fade';
 
 const Wrapper = styled.form`
   position: relative;
@@ -32,10 +33,28 @@ const SubTitle = styled.p`
   margin-bottom: 1rem;
 `;
 
+const IncorrectBlock = styled.div`
+  position: relative;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+`;
+
+const IncorrectMessage = styled.p`
+  margin: 10px;
+  padding: 10px;
+  text-align: center;
+  color: ${oc.red[7]};
+  background-color: ${oc.red[1]};
+  border: solid 1px ${oc.red[2]};
+  border-radius: 10px;
+`;
+
 class LoginView extends Component {
   constructor(props) {
     super(props);
-    this.state = { account: '', password: '' };
+    this.state = { account: '', password: '', showIncorrectMsg: false };
   }
 
   handleChange = e => {
@@ -56,36 +75,44 @@ class LoginView extends Component {
     if (account === 'admin' && password === 'admin') {
       const { AuthActions, history } = this.props;
       AuthActions.setLoginStateAsync(true);
-      history.push('/home');
+      history.goBack();
     } else {
-      alert('ㅋㅋㅋ');
+      this.setState({ showIncorrectMsg: true });
+      setTimeout(() => this.setState({ showIncorrectMsg: false }), 3000);
     }
   };
 
   render() {
     return (
-      <Wrapper>
-        <Title>Log In</Title>
-        <SubTitle>Please fill in the form to sign in!</SubTitle>
-        <InputWidthLabel
-          label="Account"
-          name="account"
-          placeholder="Enter Account"
-          autoComplete="off"
-          value={this.state.account}
-          onChange={this.handleChange}
-        />
-        <InputWidthLabel
-          label="Password"
-          type="password"
-          name="password"
-          placeholder="Enter Password"
-          value={this.state.password}
-          onChange={this.handleChange}
-          onKeyPress={this.handleKeyPress}
-        />
-        <StyledButton onClick={this.handleLogin}>Log In</StyledButton>
-      </Wrapper>
+      <Fragment>
+        <Wrapper>
+          <Title>로그인</Title>
+          <InputWidthLabel
+            name="account"
+            placeholder="아이디를 입력해주세요"
+            autoComplete="off"
+            value={this.state.account}
+            onChange={this.handleChange}
+            autoFocus
+          />
+          <InputWidthLabel
+            type="password"
+            name="password"
+            placeholder="비밀번호를 입력해주세요"
+            value={this.state.password}
+            onChange={this.handleChange}
+            onKeyPress={this.handleKeyPress}
+          />
+          <StyledButton onClick={this.handleLogin}>로그인</StyledButton>
+          <Fade in={this.state.showIncorrectMsg}>
+            <IncorrectBlock>
+              <IncorrectMessage>
+                아이디 또는 비밀번호가 올바르지 않습니다.
+              </IncorrectMessage>
+            </IncorrectBlock>
+          </Fade>
+        </Wrapper>
+      </Fragment>
     );
   }
 }
