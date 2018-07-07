@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import oc from 'open-color';
 import TitleBar from './TitleBar';
-import MainView from './MainView';
+import MainView from '../views/MainView';
 
 const Wrapper = styled.div`
   display: flex;
@@ -13,12 +13,12 @@ const Wrapper = styled.div`
 class Root extends Component {
   render() {
     return (
-      <div>
+      <Fragment>
         <TitleBar />
         <Wrapper>
           <MainView />
         </Wrapper>
-      </div>
+      </Fragment>
     );
   }
 }

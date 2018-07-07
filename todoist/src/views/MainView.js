@@ -1,20 +1,21 @@
 import React, { Component, Fragments } from 'react';
 import styled from 'styled-components';
-import { Nav, NavIcon, NavText } from './nav/Nav';
+import { Nav, NavIcon, NavText } from './../components/nav/Nav';
 import SvgIcon from 'react-icons-kit';
 import oc from 'open-color';
+import { ic_archive } from 'react-icons-kit/md/ic_archive';
 import { ic_today } from 'react-icons-kit/md/ic_today';
 import { ic_view_week } from 'react-icons-kit/md/ic_view_week';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
-import { withRR4 } from './nav/withRR4';
-import ViewToday from './ViewToday';
-import ViewWeekdays from './ViewWeekdays';
+import { withRR4 } from './../components/nav/withRR4';
+import ViewInbox from '../views/ViewInbox';
+import ViewToday from '../views/ViewToday';
+import ViewWeekdays from '../views/ViewWeekdays';
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 850px;
 `;
 
 const SidebarWrapper = styled.div`
@@ -45,6 +46,13 @@ class MainView extends Component {
             highlightBgColor={`${oc.gray[2]}`}
             defaultSelected="today"
           >
+            <Nav id="inbox">
+              <NavIcon>
+                <SvgIcon size={20} icon={ic_archive} />
+              </NavIcon>
+              <NavText> 관리함 </NavText>
+            </Nav>
+
             <Nav id="today">
               <NavIcon>
                 <SvgIcon size={20} icon={ic_today} />
@@ -61,6 +69,7 @@ class MainView extends Component {
         </SidebarWrapper>
         <ViewWrapper>
           <Route exact path="/" component={ViewToday} />
+          <Route path="/inbox" component={ViewInbox} />
           <Route path="/today" component={ViewToday} />
           <Route path="/weekdays" component={ViewWeekdays} />
         </ViewWrapper>
