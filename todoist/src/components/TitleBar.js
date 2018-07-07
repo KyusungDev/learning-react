@@ -1,18 +1,17 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import oc from 'open-color';
 import SvgIcon from 'react-icons-kit';
 import { ic_add } from 'react-icons-kit/md/ic_add';
 import { ic_playlist_add_check } from 'react-icons-kit/md/ic_playlist_add_check';
-import { Input, Button, Icon } from 'antd';
+import { Input, Button, Icon, Popover } from 'antd';
+import AddTodoButton from './AddTodoButton';
 
 const Search = Input.Search;
 
 const SearchBox = styled(Input.Search)`
-  top: -2px;
+  top: -1px;
   color: ${oc.gray[6]};
-  border: none;
-  outline: 0;
 
   & > input {
     border: none;
@@ -22,7 +21,6 @@ const SearchBox = styled(Input.Search)`
     background-color: ${oc.gray[7]};
   }
   & > input:focus {
-    outline: 0;
     background-color: ${oc.gray[2]};
   }
 `;
@@ -61,30 +59,76 @@ const AddIconWrapper = styled.div`
   width: 50px;
 `;
 
-const TitleBar = () => {
-  return (
-    <Wrapper>
-      <InnerWrapper>
-        <SidebarWrapper>
-          {' '}
-          <MainIcon
-            size={40}
-            icon={ic_playlist_add_check}
-            onClick={e => console.log('home')}
-          />
-        </SidebarWrapper>
-        <ViewWrapper>
-          <SearchBox
-            placeholder="Search for..."
-            onSearch={value => console.log(value)}
-          />
-        </ViewWrapper>
-        <AddIconWrapper>
-          <MainIcon size={35} icon={ic_add} onClick={e => console.log('add')} />
-        </AddIconWrapper>
-      </InnerWrapper>
-    </Wrapper>
-  );
-};
+class TitleBar extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { editState: false };
+  }
+
+  handleClickOutside(event) {
+    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+      alert('You clicked outside of me!');
+    }
+  }
+
+  handleClickEanbleEdit = e => {
+    this.setState({ editState: true });
+  };
+
+  handleClickAddTodo = e => {
+    this.setState({ editState: false });
+  };
+
+  handleClickCancel = e => {
+    this.setState({ editState: false });
+  };
+
+  render() {
+    const { editState } = this.state;
+    const addTodoContent = (
+      <AddTodoButton
+        editState={true}
+        onClickAddTodo={this.handleClickAddTodo}
+        onClickCancel={this.handleClickCancel}
+        date={new Date()}
+      />
+    );
+
+    return (
+      <Wrapper>
+        <InnerWrapper>
+          <SidebarWrapper>
+            {' '}
+            <MainIcon
+              size={40}
+              icon={ic_playlist_add_check}
+              onClick={e => console.log('home')}
+            />
+          </SidebarWrapper>
+          <ViewWrapper>
+            <SearchBox
+              placeholder="Search for..."
+              onSearch={value => console.log(value)}
+            />
+          </ViewWrapper>
+          <AddIconWrapper>
+            <Popover
+              content={addTodoContent}
+              title="빠른 추가"
+              trigger="click"
+              visible={editState}
+            >
+              <MainIcon
+                size={35}
+                icon={ic_add}
+                onClick={this.handleClickEanbleEdit}
+              />
+            </Popover>
+          </AddIconWrapper>
+        </InnerWrapper>
+      </Wrapper>
+    );
+  }
+}
 
 export default TitleBar;

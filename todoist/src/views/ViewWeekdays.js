@@ -73,7 +73,7 @@ class ViewWeekdays extends Component {
                 onClickEnableEdit={this.handleClickEanbleEdit}
                 onClickAddTodo={this.handleClickAddTodo}
                 onClickCancel={this.handleClickCancel}
-                enableEditing={editStates[index]}
+                editState={editStates[index]}
                 date={date}
               />
               <SpaceBetweenItem />

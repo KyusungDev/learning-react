@@ -25,7 +25,7 @@ const AddTodoText = styled.span`
 class AddTodoButton extends Component {
   constructor(props) {
     super(props);
-    this.state = { enableEditing: false };
+    this.state = { editState: false };
   }
 
   handleClickEnableEdit = e => {
@@ -33,7 +33,7 @@ class AddTodoButton extends Component {
     if (onClickEnableEdit) {
       onClickEnableEdit(e, { ...this.props });
     } else {
-      this.setState({ enableEditing: true });
+      this.setState({ editState: true });
     }
   };
 
@@ -42,7 +42,7 @@ class AddTodoButton extends Component {
     if (onClickCancel) {
       onClickCancel(e, { ...this.props });
     } else {
-      this.setState({ enableEditing: false });
+      this.setState({ editState: false });
     }
   };
 
@@ -51,16 +51,16 @@ class AddTodoButton extends Component {
     if (onClickAddTodo) {
       onClickAddTodo(e, { ...this.props });
     } else {
-      this.setState({ enableEditing: false });
+      this.setState({ editState: false });
     }
   };
 
   render() {
-    const { enableEditing } = this.props;
+    const { editState } = this.props;
     const { date } = this.props;
-    return enableEditing ? (
+    return editState ? (
       <div>
-        <InputGroup compact>
+        <InputGroup style={{ width: '540px' }}>
           <Input style={{ width: '75%' }} placeholder="작업 추가" />
           <DatePicker
             style={{ width: '25%' }}

@@ -6,23 +6,23 @@ import AddTodoButton from './../components/AddTodoButton';
 class ViewToday extends Component {
   constructor(props) {
     super(props);
-    this.state = { enableEditing: false };
+    this.state = { editState: false };
   }
 
   handleClickEanbleEdit = e => {
-    this.setState({ enableEditing: true });
+    this.setState({ editState: true });
   };
 
   handleClickAddTodo = e => {
-    this.setState({ enableEditing: false });
+    this.setState({ editState: false });
   };
 
   handleClickCancel = e => {
-    this.setState({ enableEditing: false });
+    this.setState({ editState: false });
   };
 
   render() {
-    const { enableEditing } = this.state;
+    const { editState } = this.state;
     return (
       <div>
         <SubsectionHeader dayOfWeek={'오늘'} dateText={getTodayString()} />
@@ -30,7 +30,7 @@ class ViewToday extends Component {
           onClickEnableEdit={this.handleClickEanbleEdit}
           onClickAddTodo={this.handleClickAddTodo}
           onClickCancel={this.handleClickCancel}
-          enableEditing={enableEditing}
+          editState={editState}
           date={new Date()}
         />
       </div>
