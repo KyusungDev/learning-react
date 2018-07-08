@@ -1,86 +1,52 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
-import oc from 'open-color';
-import { getDayOfWeek, getFullDateString } from './../utils/DateUtil';
-import SubsectionHeader from './../components/SubsectionHeader';
-import AddTodoButton from './../components/AddTodoButton';
-
-const TitleWrapper = styled.div`
-  font-size: 1.2em;
-  margin-left: 3px;
-  margin-bottom: 30px;
-`;
-
-const SpaceBetweenItem = styled.div`
-  margin-bottom: 40px;
-`;
+import Todo from './../components/Todo';
+import moment from 'moment';
+import Layout from '../styles/Layout';
+import Title from '../styles/Title';
 
 class ViewWeekdays extends Component {
   constructor(props) {
     super(props);
-    this.state = { editStates: this.getDefaultEditStates() };
+    this.state = { selectedTodoItem: undefined };
   }
 
-  getDefaultEditStates() {
-    return [...Array(7).keys()].map(() => false);
-  }
-
-  handleClickEanbleEdit = (e, data) => {
-    const { index } = data;
-    let defaultEditStates = this.getDefaultEditStates();
-    defaultEditStates[index] = true;
-    this.setState({ editStates: defaultEditStates });
+  handleEvent = index => event => {
+    // if (event.target.tagName === 'SPAN')
+    //   this.setState({ selectedTodoItem: index });
   };
 
-  handleClickAddTodo = (e, data) => {
-    this.setState({ editStates: this.getDefaultEditStates() });
-  };
+  // componentDidMount() {
+  //   document.addEventListener('mouseup', this.handleEvent);
+  // }
 
-  handleClickCancel = (e, data) => {
-    this.setState({ editStates: this.getDefaultEditStates() });
-  };
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   const { selectedTodoItem } = this.state;
+  //   if (selectedTodoItem === nextState.selectedTodoItem) {
+  //     return false;
+  //   }
+
+  //   return true;
+  // }
 
   render() {
-    const today = new Date();
-    const todayDate = today.getDate();
-    const { editStates } = this.state;
-
     return (
-      <div>
-        <TitleWrapper>다음 7일</TitleWrapper>
-        {[...Array(7).keys()].map((item, index) => {
-          const date = new Date();
-          date.setDate(todayDate + item);
-
-          const dayOfWeek =
-            item === 0
-              ? '오늘'
-              : item === 1
-                ? '내일'
-                : getDayOfWeek(date.getDay()) + '요일';
-
-          const dateText = getFullDateString(
-            date.getMonth(),
-            date.getDate(),
-            date.getDay()
-          );
-
+      <Layout>
+        <Title>다음 7일</Title>
+        {[...Array(7).keys()].map(day => {
           return (
-            <Fragment key={index}>
-              <SubsectionHeader dayOfWeek={dayOfWeek} dateText={dateText} />
-              <AddTodoButton
-                index={index}
-                onClickEnableEdit={this.handleClickEanbleEdit}
-                onClickAddTodo={this.handleClickAddTodo}
-                onClickCancel={this.handleClickCancel}
-                editState={editStates[index]}
-                date={date}
+            <div key={day} onClick={this.handleEvent(day)}>
+              <Todo
+                enable={this.state.selectedTodoItem == day ? true : false}
+                isTitle={true}
+                date={moment()
+                  .add(day, 'days')
+                  .format('YYYY-MM-DD')}
               />
-              <SpaceBetweenItem />
-            </Fragment>
+            </div>
           );
         })}
-      </div>
+      </Layout>
     );
   }
 }

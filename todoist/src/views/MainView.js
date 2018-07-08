@@ -14,13 +14,12 @@ import ViewWeekdays from '../views/ViewWeekdays';
 
 const Wrapper = styled.div`
   display: flex;
-  align-items: center;
   justify-content: center;
+  height: 100%;
 `;
 
 const SidebarWrapper = styled.div`
   width: 250px;
-  height: 100vh;
   background-color: ${oc.gray[1]};
   box-shadow: -1px 0px 1px rgba(0, 0, 0, 0.1);
   padding-top: 20px;
@@ -28,7 +27,6 @@ const SidebarWrapper = styled.div`
 
 const ViewWrapper = styled.div`
   width: 600px;
-  height: 100vh;
   padding: 30px;
   background-color: ${oc.gray[0]};
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);

@@ -5,11 +5,10 @@ import SvgIcon from 'react-icons-kit';
 import { ic_add } from 'react-icons-kit/md/ic_add';
 import { ic_playlist_add_check } from 'react-icons-kit/md/ic_playlist_add_check';
 import { Input, Button, Icon, Popover } from 'antd';
-import AddTodoButton from './AddTodoButton';
+import AddTodo from './AddTodo';
+import moment from 'moment';
 
-const Search = Input.Search;
-
-const SearchBox = styled(Input.Search)`
+const SearchBar = styled(Input.Search)`
   top: -1px;
   color: ${oc.gray[6]};
 
@@ -34,6 +33,9 @@ const MainIcon = styled(SvgIcon)`
 `;
 
 const Wrapper = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 40px;
   background-color: ${oc.gray[8]};
@@ -62,36 +64,17 @@ const AddIconWrapper = styled.div`
 class TitleBar extends Component {
   constructor(props) {
     super(props);
-    this.state = { editState: false };
+    this.state = { visibleAddTodo: false };
   }
-
-  handleClickOutside(event) {
-    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-      alert('You clicked outside of me!');
-    }
-  }
-
-  handleClickEanbleEdit = e => {
-    this.setState({ editState: true });
-  };
 
   handleClickAddTodo = e => {
-    this.setState({ editState: false });
-  };
-
-  handleClickCancel = e => {
-    this.setState({ editState: false });
+    this.setState({ visibleAddTodo: true });
   };
 
   render() {
-    const { editState } = this.state;
+    const { visibleAddTodo } = this.state;
     const addTodoContent = (
-      <AddTodoButton
-        editState={true}
-        onClickAddTodo={this.handleClickAddTodo}
-        onClickCancel={this.handleClickCancel}
-        date={new Date()}
-      />
+      <AddTodo date={moment().format('YYYY-MM-DD')} defaultVisible={true} />
     );
 
     return (
@@ -106,7 +89,7 @@ class TitleBar extends Component {
             />
           </SidebarWrapper>
           <ViewWrapper>
-            <SearchBox
+            <SearchBar
               placeholder="Search for..."
               onSearch={value => console.log(value)}
             />
@@ -116,12 +99,12 @@ class TitleBar extends Component {
               content={addTodoContent}
               title="빠른 추가"
               trigger="click"
-              visible={editState}
+              visible={visibleAddTodo}
             >
               <MainIcon
                 size={35}
                 icon={ic_add}
-                onClick={this.handleClickEanbleEdit}
+                onClick={this.handleClickAddTodo}
               />
             </Popover>
           </AddIconWrapper>

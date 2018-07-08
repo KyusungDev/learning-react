@@ -9,6 +9,9 @@ import SvgIcon from 'react-icons-kit';
 import { ic_add } from 'react-icons-kit/md/ic_add';
 
 const InputGroup = Input.Group;
+const Wrapper = styled.div`
+  width: 520px;
+`;
 
 const AddTodoText = styled.span`
   padding-left: 3px;
@@ -22,50 +25,50 @@ const AddTodoText = styled.span`
   }
 `;
 
-class AddTodoButton extends Component {
+class AddTodoComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = { editState: false };
+    this.state = { enable: false };
   }
 
   handleClickEnableEdit = e => {
-    const { onClickEnableEdit } = this.props;
-    if (onClickEnableEdit) {
-      onClickEnableEdit(e, { ...this.props });
-    } else {
-      this.setState({ editState: true });
-    }
+    this.setState({ enable: true });
   };
 
   handleClickCancel = e => {
-    const { onClickCancel } = this.props;
-    if (onClickCancel) {
-      onClickCancel(e, { ...this.props });
-    } else {
-      this.setState({ editState: false });
-    }
+    this.setState({ enable: false });
   };
 
   handleClickAddTodo = e => {
-    const { onClickAddTodo } = this.props;
-    if (onClickAddTodo) {
-      onClickAddTodo(e, { ...this.props });
-    } else {
-      this.setState({ editState: false });
-    }
+    this.setState({ enable: false });
   };
 
+  shouldComponentUpdate(nextProps, nextState) {
+    // console.log(nextProps, nextState);
+    // if (
+    //   JSON.stringify(nextProps) === JSON.stringify(this.props) &&
+    //   JSON.stringify(nextState) === JSON.stringify(this.state)
+    // )
+    //   return false;
+    // console.log(nextProps, nextState);
+    return true;
+  }
+
+  componentDidUpdate(prevProps) {
+    // console.log('componentDidUpdate', prevProps, this.props);
+    // if (this.props.enable === false) {
+    //   this.setState({ enable: false });
+    // }
+  }
+
   render() {
-    const { editState } = this.props;
     const { date } = this.props;
-    return editState ? (
-      <div>
-        <InputGroup style={{ width: '540px' }}>
+    const { enable } = this.state;
+    return enable ? (
+      <Wrapper>
+        <InputGroup>
           <Input style={{ width: '75%' }} placeholder="작업 추가" />
-          <DatePicker
-            style={{ width: '25%' }}
-            defaultValue={moment(date, 'YYYY-MM-DD')}
-          />
+          <DatePicker style={{ width: '25%' }} defaultValue={moment(date)} />
         </InputGroup>
         <div style={{ marginBottom: '5px' }} />
         <Button type="primary" size="small" onClick={this.handleClickAddTodo}>
@@ -75,7 +78,7 @@ class AddTodoButton extends Component {
         <Button size="small" onClick={this.handleClickCancel}>
           취소
         </Button>
-      </div>
+      </Wrapper>
     ) : (
       <AddTodoText onClick={this.handleClickEnableEdit}>
         <SvgIcon size={13} icon={ic_add} /> 작업 추가
@@ -84,14 +87,7 @@ class AddTodoButton extends Component {
   }
 }
 
-AddTodoButton.propTypes = {
-  onClickAddTodo: PropTypes.func,
-  onClickAddCancel: PropTypes.func,
-  onClickEnableEdit: PropTypes.func,
-  date: PropTypes.instanceOf(Date)
-};
-
-export default AddTodoButton;
+export default AddTodoComponent;
 
 // import moment from 'moment';
 // import { DatePicker } from 'antd';
