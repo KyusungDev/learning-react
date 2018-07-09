@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 // import styled from 'styled-components';
 import querySyring from 'query-string';
-
+import Todo from './../components/Todo';
+import Title from '../styles/Title';
 import Layout from '../styles/Layout';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as Actions from '../store/modules/Todoist';
 
 class ViewProejct extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -20,28 +23,40 @@ class ViewProejct extends Component {
   }
 
   render() {
-    const list = [
-      { id: 1, name: '1' },
-      { id: 1, name: '2' },
-      { id: 2, name: '3' },
-      { id: 1, name: '4' },
-      { id: 1, name: '5' },
-      { id: 2, name: '11' }
-    ];
-
     const {
       match: {
         params: { id }
       }
     } = this.props;
-    const newList = list.filter(item => item.id == id);
+    const { projects, items } = this.props.todoist;
+    const itemList = items.filter(item => item.project_id == id);
+    const project = projects.filter(project => project.id == id);
+    const title = project.length === 1 ? project[0].name : '';
+
     return (
       <Layout>
-        <div>ViewProejct</div>
-        {newList.map(item => <div key={item.name}>{item.name}</div>)}
+        <Title>{title}</Title>
+        {itemList.map(item => <div key={item.id}>{item.content}</div>)}
+        <Todo isTitle={false} />
       </Layout>
     );
   }
 }
 
-export default ViewProejct;
+// export default ViewProejct;
+
+// store의 state를 props로 가져오기
+const mapStateToProps = state => {
+  return { todoist: state.Todoist.todoist };
+};
+
+// action을 props로 가져오기
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(Actions, dispatch)
+});
+
+// connect HOC을 이용하여 적용
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ViewProejct);

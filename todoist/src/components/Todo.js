@@ -30,15 +30,17 @@ const Title = styled.span`
 `;
 
 const TodoComponent = ({ isTitle, date, active, onClickAdd }) => {
-  let text = moment(date).format('dd요일');
-  const small = date === '' ? '' : moment(date).format('M월 D일 (dd)');
-  if (moment().format('YYYY-MM-DD') === date) {
+  const newDate = !!date ? date : moment().format('YYYY-MM-DD');
+
+  let text = moment(newDate).format('dd요일');
+  const small = newDate === '' ? '' : moment(newDate).format('M월 D일 (dd)');
+  if (moment().format('YYYY-MM-DD') === newDate) {
     text = `오늘`;
   }
   if (
     moment()
       .add(1, 'days')
-      .format('YYYY-MM-DD') === date
+      .format('YYYY-MM-DD') === newDate
   ) {
     text = `내일`;
   }
@@ -56,7 +58,7 @@ const TodoComponent = ({ isTitle, date, active, onClickAdd }) => {
       )}
       <AddTodo
         active={active}
-        date={moment(date).format('YYYY-MM-DD')}
+        date={moment(newDate).format('YYYY-MM-DD')}
         onClickAdd={onClickAdd}
       />
     </Wrapper>
@@ -65,7 +67,7 @@ const TodoComponent = ({ isTitle, date, active, onClickAdd }) => {
 
 TodoComponent.propTypes = {
   isTitle: propTypes.bool.isRequired,
-  date: propTypes.string.isRequired,
+  // date: propTypes.string.isRequired,
   onClickAdd: propTypes.func
 };
 

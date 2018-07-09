@@ -22,7 +22,7 @@ const Item = styled.div`
 `;
 
 const Marker = styled.span`
-  color: ${props => (props.iconColor === 'red' ? oc.red[7] : oc.gray[7])};
+  color: ${props => props.iconColor};
   opacity: 0.7;
 `;
 

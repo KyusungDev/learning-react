@@ -8,6 +8,10 @@ import oc from 'open-color';
 import { Icon } from 'react-icons-kit';
 import { ic_chevron_right, ic_expand_more, ic_add } from 'react-icons-kit/md';
 
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as Actions from '../store/modules/Todoist';
+
 const Menu = styled.div`
   position: relative;
   display: block;
@@ -76,10 +80,13 @@ class ProjectMenu extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      expand: false,
+      expand: true,
       visiableAddFront: false,
-      visiableAddRear: false
+      visiableAddRear: false,
+      todoist: this.props.todoist
     };
+
+    console.log('111');
   }
 
   handleClick = e => {
@@ -109,17 +116,15 @@ class ProjectMenu extends Component {
   };
 
   render() {
-    const { expand, visiableAddFront, visiableAddRear } = this.state;
-    const projects = [
-      {
-        color: 'red',
-        name: 'name'
-      },
-      {
-        color: '',
-        name: 'name2'
-      }
-    ];
+    const { expand, visiableAddFront, visiableAddRear, todoist } = this.state;
+    const projectColors = [`${oc.red[5]}`, `${oc.blue[5]}`];
+    const projects = todoist.projects.map(item => {
+      return {
+        id: item.id,
+        name: item.name,
+        color: projectColors[item.color - 1]
+      };
+    });
 
     return (
       <div>
@@ -145,9 +150,9 @@ class ProjectMenu extends Component {
                 onClickCancel={this.handleClickCancelAddProject}
               />
             )}
-            {projects.map((item, index) => (
-              <NavLink to={`/project/${index + 1}`} key={index}>
-                <ProjectItem iconColor={item.color} name={item.name} />
+            {projects.map(project => (
+              <NavLink to={`/project/${project.id}`} key={project.id}>
+                <ProjectItem iconColor={project.color} name={project.name} />
               </NavLink>
             ))}
             {visiableAddRear && (
@@ -167,4 +172,20 @@ class ProjectMenu extends Component {
   }
 }
 
-export default ProjectMenu;
+// export default ProjectMenu;
+
+// store의 state를 props로 가져오기
+const mapStateToProps = state => {
+  return { todoist: state.Todoist.todoist };
+};
+
+// action을 props로 가져오기
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(Actions, dispatch)
+});
+
+// connect HOC을 이용하여 적용
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ProjectMenu);

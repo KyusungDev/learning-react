@@ -2,14 +2,14 @@ import { createAction, handleActions } from 'redux-actions';
 import produce from 'immer';
 
 // 타입's
-const GET_LOGIN_STATE = 'Auth/GET_LOGIN_STATE';
-const SET_LOGIN_STATE = 'Auth/SET_LOGIN_STATE';
+const GET_STATE = 'Todoist/GET_STATE';
+const SET_STATE = 'Todoist/SET_STATE';
 
 // 액션's
-export const getLoginState = createAction(GET_LOGIN_STATE);
-export const setLoginState = createAction(SET_LOGIN_STATE);
+export const getState = createAction(GET_STATE);
+export const setState = createAction(SET_STATE);
 
-export const getLoginStateAsync = callback => dispatch => {
+export const getStateAsync = () => dispatch => {
   // v1/hosts
   // v1/host-status/resource
   // Promise.all([
@@ -39,39 +39,138 @@ export const getLoginStateAsync = callback => dispatch => {
   //  });
 
   setTimeout(() => {
-    let isLoginSuccess = true;
     dispatch(
-      getLoginState({
-        isLoginSuccess
+      getState({
+        initialize
       })
     );
   }, 1000);
 };
 
-export const setLoginStateAsync = state => dispatch => {
+export const setStateAsync = state => dispatch => {
   dispatch(
-    setLoginState({
-      isLoginSuccess: state
+    setState({
+      todoist: state
     })
   );
 };
 
 // 초기화
 const initialize = {
-  isLoginSuccess: false
+  todoist: {
+    filter: [
+      {
+        id: 10000000,
+        name: '내일 할일',
+        color: 1,
+        query: 'todo_tomorrow'
+      }
+    ],
+    projects: [
+      {
+        id: 100000000,
+        name: '새 프로젝트',
+        color: 1 // red
+      },
+      {
+        id: 100000001,
+        name: '새 프로젝트2',
+        color: 2 // blue
+      }
+    ],
+    items: [
+      {
+        id: 200000000,
+        content: 'test1',
+        project_id: 100000000,
+        labels: [], // filter tag
+        date_added: '',
+        due_date_utc: ''
+      },
+      {
+        id: 200000001,
+        content: 'test2',
+        project_id: 100000001,
+        labels: [], // filter tag
+        date_added: '',
+        due_date_utc: ''
+      }
+    ]
+  }
 };
+
+// filter: id, name, color, query // id 10000000 ~
+// projects : id, name, color // id 100000000 ~
+// items: id, name, content, project_id, labels[], checked, date_added, due_date_utc // id 200000000 ~
+/*
+
+// filter
+"name": "나에게 할당된",
+"color": 12,
+"item_order": 1,
+"is_favorite": 0,
+"query": ":to_me:",
+"is_deleted": 0,
+"id": 11549971
+
+// projects 
+{
+  "is_favorite": 0,
+  "color": 7,
+  "collapsed": 0,
+  "inbox_project": true,
+  "id": 181738844,
+  "indent": 1,
+  "name": "Inbox",
+  "has_more_notes": false,
+  "is_deleted": 0,
+  "parent_id": null,
+  "item_order": 0,
+  "shared": false,
+  "is_archived": 0
+},
+  
+// items
+{
+  "day_order": 1,
+  "assigned_by_uid": null,
+  "is_archived": 0,
+  "labels": [],
+  "sync_id": null,
+  "date_completed": null,
+  "all_day": true,
+  "in_history": 0,
+  "date_added": "Mon 09 Jul 2018 11:36:31 +0000",
+  "indent": 1,
+  "date_lang": "ko",
+  "id": 2723161570,
+  "priority": 1,
+  "checked": 0,
+  "user_id": 9267314,
+  "has_more_notes": false,
+  "due_date_utc": "Mon 09 Jul 2018 14:59:59 +0000",
+  "content": "asdasd",
+  "parent_id": null,
+  "item_order": 1,
+  "is_deleted": 0,
+  "responsible_uid": null,
+  "project_id": 181738844,
+  "collapsed": 0,
+  "date_string": "7월9일"
+},
+*/
 
 // 리듀서's
 export default handleActions(
   {
-    [GET_LOGIN_STATE]: (state, action) => {
+    [GET_STATE]: (state, action) => {
       return produce(state, draftState => {
-        draftState.isLoginSuccess = action.payload.isLoginSuccess;
+        draftState.todoist = action.payload.todoist;
       });
     },
-    [SET_LOGIN_STATE]: (state, action) => {
+    [SET_STATE]: (state, action) => {
       return produce(state, draftState => {
-        draftState.isLoginSuccess = action.payload.isLoginSuccess;
+        draftState.todoist = action.payload.todoist;
       });
     }
   },
