@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 import { injectGlobal, css } from 'styled-components';
 import reset from 'styled-reset';
 import store from './store';

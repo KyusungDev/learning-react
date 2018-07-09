@@ -74,7 +74,7 @@ class TitleBar extends Component {
   render() {
     const { visibleAddTodo } = this.state;
     const addTodoContent = (
-      <AddTodo date={moment().format('YYYY-MM-DD')} defaultVisible={true} />
+      <AddTodo date={moment().format('YYYY-MM-DD')} enable={true} />
     );
 
     return (
@@ -99,7 +99,7 @@ class TitleBar extends Component {
               content={addTodoContent}
               title="빠른 추가"
               trigger="click"
-              visible={visibleAddTodo}
+              // visible={visibleAddTodo}
             >
               <MainIcon
                 size={35}

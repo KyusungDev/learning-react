@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-
 import TitleBar from '../components/TitleBar';
 import Menu from '../components/Menu';
 import Panel from './Panel';

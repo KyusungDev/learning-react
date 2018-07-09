@@ -1,10 +1,11 @@
 import React from 'react';
-import { Icon } from 'react-icons-kit';
+import styled from 'styled-components';
 import oc from 'open-color';
+import { Icon } from 'react-icons-kit';
 import { ic_archive, ic_today, ic_view_week } from 'react-icons-kit/md';
 import { NavLink } from 'react-router-dom';
-import styled from 'styled-components';
 import { Vertical } from '../styles/Common';
+import ProjectMenu from './ProjectMenu';
 
 const Menu = styled.div`
   width: 250px;
@@ -33,7 +34,7 @@ const Item = styled(NavLink)`
 
   &.active {
     background-color: #fff;
-    color: #000;
+    color: ${oc.gray[9]};
     font-weight: bold;
   }
 
@@ -60,10 +61,11 @@ const MenuComponent = () => (
         <Icon className="icon" icon={ic_today} size="24" />
         <span>오늘</span>
       </Item>
-      <Item to="/weekdays">
+      <Item to="/week">
         <Icon className="icon" icon={ic_view_week} size="24" />
         <span>다음 7일</span>
       </Item>
+      <ProjectMenu />
     </Nav>
   </Menu>
 );

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import propTypes from 'prop-types';
 import styled from 'styled-components';
 import oc from 'open-color';
-import { Input, DatePicker, Button } from 'antd';
-import 'antd/dist/antd.css';
 import moment from 'moment';
 import SvgIcon from 'react-icons-kit';
 import { ic_add } from 'react-icons-kit/md/ic_add';
+import { Input, DatePicker, Button } from 'antd';
+import 'antd/dist/antd.css';
 
 const InputGroup = Input.Group;
 const Wrapper = styled.div`
@@ -31,7 +31,11 @@ class AddTodoComponent extends Component {
     this.state = { enable: false };
   }
 
-  handleClickEnableEdit = e => {
+  handleClickAdd = e => {
+    if (this.props.onClickAdd) {
+      this.props.onClickAdd(e);
+    }
+
     this.setState({ enable: true });
   };
 
@@ -39,31 +43,16 @@ class AddTodoComponent extends Component {
     this.setState({ enable: false });
   };
 
-  handleClickAddTodo = e => {
-    this.setState({ enable: false });
-  };
-
-  shouldComponentUpdate(nextProps, nextState) {
-    // console.log(nextProps, nextState);
-    // if (
-    //   JSON.stringify(nextProps) === JSON.stringify(this.props) &&
-    //   JSON.stringify(nextState) === JSON.stringify(this.state)
-    // )
-    //   return false;
-    // console.log(nextProps, nextState);
-    return true;
-  }
-
-  componentDidUpdate(prevProps) {
-    // console.log('componentDidUpdate', prevProps, this.props);
-    // if (this.props.enable === false) {
-    //   this.setState({ enable: false });
-    // }
+  componentWillReceiveProps(nextProps) {
+    if ('active' in nextProps) {
+      this.setState({ enable: !!nextProps.active });
+    }
   }
 
   render() {
     const { date } = this.props;
-    const { enable } = this.state;
+    let { enable } = this.state;
+
     return enable ? (
       <Wrapper>
         <InputGroup>
@@ -71,7 +60,7 @@ class AddTodoComponent extends Component {
           <DatePicker style={{ width: '25%' }} defaultValue={moment(date)} />
         </InputGroup>
         <div style={{ marginBottom: '5px' }} />
-        <Button type="primary" size="small" onClick={this.handleClickAddTodo}>
+        <Button type="primary" size="small" onClick={this.handleClickCancel}>
           작업 추가
         </Button>
         <span style={{ marginLeft: '5px' }} />
@@ -80,12 +69,16 @@ class AddTodoComponent extends Component {
         </Button>
       </Wrapper>
     ) : (
-      <AddTodoText onClick={this.handleClickEnableEdit}>
+      <AddTodoText onClick={this.handleClickAdd}>
         <SvgIcon size={13} icon={ic_add} /> 작업 추가
       </AddTodoText>
     );
   }
 }
+
+AddTodoComponent.propTypes = {
+  date: propTypes.string.isRequired
+};
 
 export default AddTodoComponent;
 

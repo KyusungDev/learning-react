@@ -29,7 +29,7 @@ const Title = styled.span`
   }
 `;
 
-const TodoComponent = ({ isTitle, date, ...rest }) => {
+const TodoComponent = ({ isTitle, date, active, onClickAdd }) => {
   let text = moment(date).format('dd요일');
   const small = date === '' ? '' : moment(date).format('M월 D일 (dd)');
   if (moment().format('YYYY-MM-DD') === date) {
@@ -54,14 +54,19 @@ const TodoComponent = ({ isTitle, date, ...rest }) => {
           <hr style={{ opacity: '0.15' }} />
         </TitleWrapper>
       )}
-      <AddTodo {...rest} date={moment(date).format('YYYY-MM-DD')} />
+      <AddTodo
+        active={active}
+        date={moment(date).format('YYYY-MM-DD')}
+        onClickAdd={onClickAdd}
+      />
     </Wrapper>
   );
 };
 
 TodoComponent.propTypes = {
   isTitle: propTypes.bool.isRequired,
-  date: propTypes.string.isRequired
+  date: propTypes.string.isRequired,
+  onClickAdd: propTypes.func
 };
 
 export default TodoComponent;
