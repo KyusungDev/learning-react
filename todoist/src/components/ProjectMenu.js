@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import AddProject from './AddProject';
-import ProjectItem from './ProjectItem';
 import { Vertical } from '../styles/Common';
 import oc from 'open-color';
 import { Icon } from 'react-icons-kit';
@@ -10,7 +9,8 @@ import { ic_chevron_right, ic_expand_more, ic_add } from 'react-icons-kit/md';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as Actions from '../store/modules/Todoist';
+import * as TodoistActions from '../store/modules/Todoist';
+import * as ConfigActions from '../store/modules/Config';
 
 const Menu = styled.div`
   position: relative;
@@ -46,11 +46,13 @@ const Menu = styled.div`
   }
 `;
 
-const AddRearWrapper = styled.span`
+const AddRearWrapper = styled.div`
   position: relative;
-  height: 100%;
+  display: inline-block;
+  height: 30px;
   font-size: 0.8em;
   user-select: none;
+  padding-left: 10px;
   ${Vertical};
 
   & > span {
@@ -70,40 +72,73 @@ const AddRearWrapper = styled.span`
   }
 `;
 
-const Items = styled.div`
+const SubMenu = styled.div`
   position: relative;
-  height: 30px;
   padding-left: 20px;
+`;
+
+const ProjectItem = styled(NavLink)`
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  font-size: 0.8em;
+  padding-left: 11px;
+
+  &:hover {
+    color: ${oc.gray[7]};
+    background-color: #fff;
+  }
+
+  &.active {
+    text-decoration: none;
+    background-color: #fff;
+    color: ${oc.gray[9]};
+
+    & > .name {
+      font-weight: bold;
+    }
+  }
+
+  & > .name {
+    color: ${oc.gray[7]};
+    padding-left: 5px;
+  }
+`;
+
+const Marker = styled.span`
+  color: ${props => props.color};
+  opacity: 0.7;
 `;
 
 class ProjectMenu extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      expand: true,
+      expand: this.props.expand,
+      todoist: this.props.todoist,
       visiableAddFront: false,
       visiableAddRear: false,
-      todoist: this.props.todoist
+      selectedProejctId: ''
     };
-
-    console.log('111');
   }
 
   handleClick = e => {
-    this.setState({ expand: !this.state.expand });
+    this.props.configActions.ExpandProjectMenuSync(!this.props.expand);
   };
 
   handleClickAddFront = e => {
     e.stopPropagation();
+    this.props.configActions.ExpandProjectMenuSync(true);
     this.setState({
       visiableAddFront: true,
-      visiableAddRear: false,
-      expand: true
+      visiableAddRear: false
     });
   };
 
   handleClickAddRear = e => {
-    e.stopPropagation();
     this.setState({ visiableAddFront: false, visiableAddRear: true });
   };
 
@@ -115,14 +150,18 @@ class ProjectMenu extends Component {
     this.setState({ visiableAddFront: false, visiableAddRear: false });
   };
 
+  handleClickProjectItem = (e, id) => {
+    this.setState({ selectedProejctId: id });
+  };
+
   render() {
-    const { expand, visiableAddFront, visiableAddRear, todoist } = this.state;
-    const projectColors = [`${oc.red[5]}`, `${oc.blue[5]}`];
+    const { expand } = this.props;
+    const { visiableAddFront, visiableAddRear, todoist } = this.state;
     const projects = todoist.projects.map(item => {
       return {
         id: item.id,
         name: item.name,
-        color: projectColors[item.color - 1]
+        color: item.color
       };
     });
 
@@ -143,20 +182,28 @@ class ProjectMenu extends Component {
           />
         </Menu>
         {expand && (
-          <Items>
+          <SubMenu>
             {visiableAddFront && (
               <AddProject
+                color={oc.red[5]}
                 onClickAdd={this.handleClickAddProejct}
                 onClickCancel={this.handleClickCancelAddProject}
               />
             )}
             {projects.map(project => (
-              <NavLink to={`/project/${project.id}`} key={project.id}>
-                <ProjectItem iconColor={project.color} name={project.name} />
-              </NavLink>
+              <ProjectItem
+                onClick={e => this.handleClickProjectItem(e, project.id)}
+                isActive={() => this.state.selectedProejctId === project.id}
+                to={`/project/${project.id}`}
+                key={project.id}
+              >
+                <Marker color={project.color}>●</Marker>
+                <span className="name">{project.name}</span>
+              </ProjectItem>
             ))}
             {visiableAddRear && (
               <AddProject
+                color={oc.blue[5]}
                 onClickAdd={this.handleClickAddProejct}
                 onClickCancel={this.handleClickCancelAddProject}
               />
@@ -165,26 +212,25 @@ class ProjectMenu extends Component {
               <Icon className="icon-add" icon={ic_add} size={16} />
               <span>프로젝트 추가</span>
             </AddRearWrapper>
-          </Items>
+          </SubMenu>
         )}
       </div>
     );
   }
 }
 
-// export default ProjectMenu;
-
-// store의 state를 props로 가져오기
 const mapStateToProps = state => {
-  return { todoist: state.Todoist.todoist };
+  return {
+    todoist: state.Todoist.todoist,
+    expand: state.Config.projectMenuExpand
+  };
 };
 
-// action을 props로 가져오기
 const mapDispatchToProps = dispatch => ({
-  actions: bindActionCreators(Actions, dispatch)
+  todoistActions: bindActionCreators(TodoistActions, dispatch),
+  configActions: bindActionCreators(ConfigActions, dispatch)
 });
 
-// connect HOC을 이용하여 적용
 export default connect(
   mapStateToProps,
   mapDispatchToProps

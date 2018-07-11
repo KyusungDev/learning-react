@@ -5,7 +5,7 @@ import oc from 'open-color';
 
 const Item = styled.div`
   position: relative;
-  height: 100%;
+  height: 30px;
   font-size: 0.8em;
   user-select: none;
   padding-left: 2px;
@@ -15,6 +15,10 @@ const Item = styled.div`
     padding-left: 5px;
   }
 
+  &:active {
+    background-color: red;
+  }
+
   /* & > .icon {
     color: ${oc.gray[7]};
     transform: translateY(-50%);
@@ -22,14 +26,14 @@ const Item = styled.div`
 `;
 
 const Marker = styled.span`
-  color: ${props => props.iconColor};
+  color: ${props => props.color};
   opacity: 0.7;
 `;
 
 const ProjectItem = ({ iconColor, name }) => {
   return (
     <Item>
-      <Marker iconColor={iconColor}>●</Marker>
+      <Marker color={iconColor}>●</Marker>
       <span className="name">{name}</span>
     </Item>
   );

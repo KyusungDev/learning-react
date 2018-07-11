@@ -11,6 +11,8 @@ import * as Actions from '../store/modules/Todoist';
 class ViewProejct extends Component {
   constructor(props) {
     super(props);
+
+    console.log('viewproejct');
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -29,8 +31,8 @@ class ViewProejct extends Component {
       }
     } = this.props;
     const { projects, items } = this.props.todoist;
-    const itemList = items.filter(item => item.project_id == id);
-    const project = projects.filter(project => project.id == id);
+    const itemList = items.filter(item => item.project_id === parseInt(id));
+    const project = projects.filter(project => project.id === parseInt(id));
     const title = project.length === 1 ? project[0].name : '';
 
     return (

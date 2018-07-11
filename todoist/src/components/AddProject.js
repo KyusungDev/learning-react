@@ -16,6 +16,17 @@ const InputName = styled(Input)`
   }
 `;
 
+const Marker = styled.span`
+  position: relative;
+  font-size: 1.6em;
+  height: 100%;
+  /* line-height: 100%;
+  vertical-align: middle; */
+  top: -2px;
+  color: ${props => props.color};
+  opacity: 0.7;
+`;
+
 class AddProjectComponent extends Component {
   constructor(props) {
     super(props);
@@ -47,13 +58,15 @@ class AddProjectComponent extends Component {
   };
 
   render() {
+    const { color } = this.props;
     const { name } = this.state;
 
     return this.state.visible ? (
       <div>
         <InputName
           placeholder="프로젝트 이름"
-          prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+          // prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+          prefix={<Marker color={color}>●</Marker>}
           suffix={<Icon type="close-circle" onClick={this.emitEmpty} />}
           value={name}
           onChange={this.onChangeName}

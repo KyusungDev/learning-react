@@ -16,7 +16,8 @@ const Menu = styled.div`
 
 const Nav = styled.div`
   width: 100%;
-  color: #717171;
+  font-size: 0.9em;
+  color: ${oc.gray[7]};
 `;
 
 const Item = styled(NavLink)`
@@ -29,6 +30,7 @@ const Item = styled(NavLink)`
   & > span { display: inline-block; vertical-align: middle; } */
  
   &:hover {
+    color: ${oc.gray[7]};
     background-color: #fff;
   }
 

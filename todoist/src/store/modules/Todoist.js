@@ -1,5 +1,6 @@
 import { createAction, handleActions } from 'redux-actions';
 import produce from 'immer';
+import oc from 'open-color';
 
 // 타입's
 const GET_STATE = 'Todoist/GET_STATE';
@@ -41,7 +42,7 @@ export const getStateAsync = () => dispatch => {
   setTimeout(() => {
     dispatch(
       getState({
-        initialize
+        todoist: initialize.todoist
       })
     );
   }, 1000);
@@ -62,7 +63,7 @@ const initialize = {
       {
         id: 10000000,
         name: '내일 할일',
-        color: 1,
+        color: oc.red[5],
         query: 'todo_tomorrow'
       }
     ],
@@ -70,12 +71,12 @@ const initialize = {
       {
         id: 100000000,
         name: '새 프로젝트',
-        color: 1 // red
+        color: oc.red[5]
       },
       {
         id: 100000001,
         name: '새 프로젝트2',
-        color: 2 // blue
+        color: oc.blue[5]
       }
     ],
     items: [
